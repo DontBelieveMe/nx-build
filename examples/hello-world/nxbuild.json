@@ -1,16 +1,38 @@
 {
-    "srcFiles": [
-        "src/main.c",
-        "src/impl.c"
-    ],
-    "headerFiles": [
-        "include/main.h"
-    ],
-
-    "includeDirs": [
-        "include"
-    ],
-    "compilerFlags": "-Wall -Werror -Wpedantic",
+    /* Potentially use this system? */
+    "target": 
+    {
+        "name": "helloWorld",
+        "type": "executable",
+        "src": [
+            "src/main.c",
+            "src/impl.c"
+        ],
+        "headers": [
+            "include/main.h"
+        ],
+        "includeDirs": [
+            "include"
+        ],
+        "compilerFlags": "-Wall -Werror -Wpedantic"
+    },
     "buildDir": "build", 
-    "targetName": "helloWorld" 
+    
+    "old-format":
+    {
+        "srcFiles": [
+            "src/main.c",
+            "src/impl.c"
+        ],
+        "headerFiles": [
+            "include/main.h"
+        ],
+
+        "includeDirs": [
+            "include"
+        ],
+        "compilerFlags": "-Wall -Werror -Wpedantic",
+        "targetName": "helloWorld",
+        "targetType": "executable"
+    }
 }
