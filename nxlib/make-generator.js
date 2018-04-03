@@ -2,6 +2,7 @@
 
 var StringBuilder = require('./string-builder');
 var path = require('path');
+var log = require('./log');
 
 class MakeGenerator {
     constructor(nbxConfig) {
@@ -20,6 +21,27 @@ class MakeGenerator {
         });
 
         return srcs;
+    }
+
+    _getCompilerFlagsString() {
+        var nbx = this.nbxConfig;
+
+        if(nbx.compilerFlags === undefined)
+            return '';
+
+        if(Array.isArray(nbx.compilerFlags)) {
+            var sb = new StringBuilder();
+            nbx.compilerFlags.forEach((val, index, array) => {
+                if(index > 0) 
+                    sb.append(' ');
+                
+                    sb.append(val);
+            });
+            
+            return sb.toString();
+        } else if(typeof nbx.compilerFlags === "string") {
+            return nbx.compilerFlags;
+        }
     }
 
     _getSourcesString() {
@@ -57,7 +79,7 @@ class MakeGenerator {
     _getVarsString() {
         var vars = new StringBuilder();
         vars.appendLine("CC:=gcc");
-        vars.appendLine("CFLAGS:=-c -Wall");
+        vars.appendLine("CFLAGS:=" + this._getCompilerFlagsString());
         vars.appendLine("LDFLAGS:=");
         vars.appendLine("INCLUDEDIRS:=" + this._getIncludeDirsString())
         vars.appendLine("SOURCES:=" + this._getSourcesString());
@@ -72,7 +94,7 @@ class MakeGenerator {
         cmds.appendLine("all: $(SOURCES) $(TARGET_NAME)");
         cmds.appendLine("$(TARGET_NAME): $(OBJECTS)");
         cmds.appendLine("\t@$(CC) $(LDFLAGS) $(OBJECTS) -o $@");
-        cmds.appendLine("\t@echo Linking executable");
+        cmds.appendLine("\t" + log.echoCommand("Linking executable!"));
         cmds.appendLine();
 
         var rawSrcFilePaths = this.nbxConfig.srcFiles;
@@ -81,8 +103,10 @@ class MakeGenerator {
             var objFileName = this.objFileDir + '/' + filename + '.o';
             var percentageThroughBuild = Math.round(((index + 1) / array.length) * 100);
             cmds.appendLine(objFileName + ': ' + val);
-            cmds.appendLine('\t@$(CC) $(INCLUDEDIRS) $(CFLAGS) $^ -o ' + objFileName);
-            cmds.appendLine("\t@echo [" + percentageThroughBuild + "%] Building file " + rawSrcFilePaths[index]);
+            cmds.appendLine('\t@$(CC) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName);
+            
+            var echoCmd = log.echoCommand("[" + percentageThroughBuild + "%] Building file " + rawSrcFilePaths[index]);
+            cmds.appendLine("\t" + echoCmd);
         });
 
         return cmds.toString();

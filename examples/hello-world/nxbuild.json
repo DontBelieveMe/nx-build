@@ -10,11 +10,7 @@
     "includeDirs": [
         "include"
     ],
-    "compilerFlags": [
-        "-Wall",
-        "-Werror",
-        "-Wpedantic"
-    ],
+    "compilerFlags": "-Wall -Werror -Wpedantic",
     "buildDir": "build", 
     "targetName": "helloWorld" 
 }
