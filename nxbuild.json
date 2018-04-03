@@ -1,0 +1,20 @@
+{
+    "srcFiles": [
+        "src/main.c",
+        "src/impl.c"
+    ],
+    "headerFiles": [
+        "include/main.h"
+    ],
+
+    "includeDirs": [
+        "include"
+    ],
+    "compilerFlags": [
+        "-Wall",
+        "-Werror",
+        "-Wpedantic"
+    ],
+    "buildDir": "build", 
+    "targetName": "helloWorld" 
+}
