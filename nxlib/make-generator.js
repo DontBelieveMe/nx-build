@@ -5,11 +5,45 @@ var path = require('path');
 var log = require('./log');
 var config = require('./config-options');
 
+class MakeVariable {
+    constructor(name, value) {
+        this.name = name;
+        this.value = value;
+    }
+}
+
+class MakeRule {
+    constructor(target, prerequisites, commands) {
+        this.target = target;
+        this.prerequisites = prerequisites;
+        this.commands = commands;
+    }
+}
+
+class Makefile {
+    constructor() {
+        this.variablesBuilder = new StringBuilder();
+        this.rulesBuilder = new StringBuilder();
+    }
+
+    addVariable(variable) {
+        this.variablesBuilder.appendLine(variable.name + ":=" + variable.value);
+    }
+
+    addRule(rule) {
+        this.rulesBuilder.appendLine(rule.target + ': ' + rule.prerequisites);
+        rule.commands.forEach((val, index, array) => {
+            this.rulesBuilder.appendLine('\t' + val);
+        });
+    }
+}
+
 class MakeGenerator {
     constructor(nbxConfig) {
         this.nbxConfig = nbxConfig;
 
         this.objFileDir = 'obj';
+        this.makefile = new Makefile();
     }
 
     _getSourceRelativeArray() {
@@ -78,6 +112,8 @@ class MakeGenerator {
     }
 
     _getVarsString() {
+        // TODO: Implement this w/ this.makefile / Makefile.addVariable()
+
         var vars = new StringBuilder();
         // TODO We should abstract these away into a format like
         // var mf = new MakefileBuilder();
@@ -108,6 +144,8 @@ class MakeGenerator {
     }
 
     _getCommandsString() {
+        // TODO: Implement this w/ this.makefile / Makefile.addRule()
+
         // TODO We should abstract these away into a format like
         // var mf = new MakefileBuilder();
         // var command = new MakeCommand(this._getLinkingCommand()).setSilent();
