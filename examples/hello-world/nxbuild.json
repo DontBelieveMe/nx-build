@@ -1,33 +1,21 @@
 {
-   "target": 
-    {
-        "name": "helloWorld",
-        "type": "executable",
-        "src": [
-            "src/main.c",
-            "src/impl.c"
-        ],
-        "headers": [
-            "include/main.h"
-        ],
-        "includeDirs": [
-            "include"
-        ],
-        "compilerFlags": "-Wall -Werror -Wpedantic"
-    },
     "buildDir": "build", 
-       "srcFiles": [
-            "src/main.c",
-            "src/impl.c"
-        ],
-        "headerFiles": [
-            "include/main.h"
-        ],
 
-        "includeDirs": [
-            "include"
-        ],
-        "compilerFlags": "-Wall -Werror -Wpedantic",
-        "targetName": "helloWorld",
-        "targetType": "executable"
+    "srcFiles": [
+        "src/main.c",
+        "src/impl.c"
+    ],
+    "headerFiles": [
+        "include/main.h"
+    ],
+
+    "includeDirs": [
+        "include"
+    ],
+
+    "compilerFlags": "-Wall -Werror -Wpedantic",
+    "targetName": "helloWorld",
+    "targetType": "executable",
+    "cCompiler": "gcc",
+    "cppCompiler": "g++" 
 }

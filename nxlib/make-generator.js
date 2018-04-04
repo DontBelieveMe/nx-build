@@ -126,7 +126,8 @@ class MakeGenerator {
     _setVariables() {
         var mf = this.makefile;
         
-        mf.addVariable(new MakeVariable('CC', 'gcc'));
+        mf.addVariable(new MakeVariable('CC', this.nbxConfig.cCompiler));
+        mf.addVariable(new MakeVariable('CXX', this.nbxConfig.cppCompiler));
         mf.addVariable(new MakeVariable('AR', 'ar'));
         mf.addVariable(new MakeVariable('CFLAGS', this._getCompilerFlagsString()));
         mf.addVariable(new MakeVariable('LDFLAGS', ''));

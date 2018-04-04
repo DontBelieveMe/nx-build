@@ -24,6 +24,15 @@ class ConfigSanitizer {
         if(nx.targetType === undefined) {
             nx.targetType = "executable";
         }
+        
+        // TODO: Fix these to auto detect system compiler
+        if(nx.cCompiler === undefined) {
+            nx.cCompiler = "gcc"; 
+        }
+
+        if(nx.cppCompiler === undefined) {
+            nx.cppCompiler = "g++";
+        }
 
         return nx;
     }
