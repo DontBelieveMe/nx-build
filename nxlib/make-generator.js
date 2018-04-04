@@ -32,9 +32,19 @@ class Makefile {
 
     addRule(rule) {
         this.rulesBuilder.appendLine(rule.target + ': ' + rule.prerequisites);
-        rule.commands.forEach((val, index, array) => {
-            this.rulesBuilder.appendLine('\t' + val);
-        });
+        
+        if(rule.commands !== undefined) {
+            rule.commands.forEach((val, index, array) => {
+                this.rulesBuilder.appendLine('\t' + val);
+            });
+        }
+    }
+
+    toString() {
+        var mf = new StringBuilder();
+        mf.appendLine(this.variablesBuilder.toString());
+        mf.appendLine(this.rulesBuilder.toString());
+        return mf.toString();
     }
 }
 
@@ -67,10 +77,11 @@ class MakeGenerator {
         if(Array.isArray(nbx.compilerFlags)) {
             var sb = new StringBuilder();
             nbx.compilerFlags.forEach((val, index, array) => {
-                if(index > 0) 
+                if(index > 0) {
                     sb.append(' ');
-                
-                    sb.append(val);
+                }
+
+                sb.append(val);
             });
             
             return sb.toString();
@@ -84,10 +95,11 @@ class MakeGenerator {
         var srcs = new StringBuilder();
         
         this._getSourceRelativeArray().forEach((val, index, array) => {
-            if(index > 0) 
+            if(index > 0){ 
                 srcs.append(' ');
-            
-                srcs.append(val);
+            }
+
+            srcs.append(val);
         });
 
         return srcs.toString();
@@ -111,24 +123,17 @@ class MakeGenerator {
         return includes.toString();
     }
 
-    _getVarsString() {
-        // TODO: Implement this w/ this.makefile / Makefile.addVariable()
-
-        var vars = new StringBuilder();
-        // TODO We should abstract these away into a format like
-        // var mf = new MakefileBuilder();
-        // mf.addVariable(new MakeVariable("CC", "gcc"));
-        // mf.addVariable(new MakeVariable("OBJECTS", "$(SOURCES:.c=.o)"));
-        vars.appendLine("CC:=gcc");
-        vars.appendLine("AR:=ar");
-        vars.appendLine("CFLAGS:=" + this._getCompilerFlagsString());
-        vars.appendLine("LDFLAGS:=");
-        vars.appendLine("INCLUDEDIRS:=" + this._getIncludeDirsString())
-        vars.appendLine("SOURCES:=" + this._getSourcesString());
-        vars.appendLine("OBJECTS:=$(SOURCES:.c=.o)");
-        vars.appendLine("OBJECTS:=$(addprefix obj/, $(notdir $(OBJECTS)))");
-        vars.appendLine("TARGET_NAME:=" + this.nbxConfig.targetName);
-        return vars.toString();
+    _setVariables() {
+        var mf = this.makefile;
+        
+        mf.addVariable(new MakeVariable('CC', 'gcc'));
+        mf.addVariable(new MakeVariable('AR', 'ar'));
+        mf.addVariable(new MakeVariable('CFLAGS', this._getCompilerFlagsString()));
+        mf.addVariable(new MakeVariable('LDFLAGS', ''));
+        mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
+        mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
+        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(notdir $(SOURCES:.c=.o)))'));
+        mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
     }
 
     _getLinkingCommand() {
@@ -143,40 +148,33 @@ class MakeGenerator {
         }
     }
 
-    _getCommandsString() {
-        // TODO: Implement this w/ this.makefile / Makefile.addRule()
-
-        // TODO We should abstract these away into a format like
-        // var mf = new MakefileBuilder();
-        // var command = new MakeCommand(this._getLinkingCommand()).setSilent();
-        // mf.addRule(new MakeRule("all", "$(SOURCES) $(TARGET_NAME)", command));
-        var cmds = new StringBuilder();
-        cmds.appendLine("all: $(SOURCES) $(TARGET_NAME)");
-        cmds.appendLine("$(TARGET_NAME): $(OBJECTS)");
-        cmds.appendLine("\t@" + this._getLinkingCommand());
-        cmds.appendLine("\t" + log.echoCommand("Linking target!"));
-        cmds.appendLine();
+    _setCommands() {
+        var mf = this.makefile;
+        mf.addRule(new MakeRule('all', '$(SOURCES) $(TARGET_NAME)'));
+        mf.addRule(new MakeRule('$(TARGET_NAME)', '$(OBJECTS)', [
+            '@' + this._getLinkingCommand(),
+            log.echoCommand("Linking target!")
+        ]));
 
         var rawSrcFilePaths = this.nbxConfig.srcFiles;
         this._getSourceRelativeArray().forEach((val, index, array) => {
             var filename = path.basename(val, '.c');
             var objFileName = this.objFileDir + '/' + filename + '.o';
             var percentageThroughBuild = Math.round(((index + 1) / array.length) * 100);
-            cmds.appendLine(objFileName + ': ' + val);
-            cmds.appendLine('\t@$(CC) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName);
             
-            var echoCmd = log.echoCommand("[" + percentageThroughBuild + "%] Building file " + rawSrcFilePaths[index]);
-            cmds.appendLine("\t" + echoCmd);
+            var logMessage = '[' + percentageThroughBuild + '%] Building file ' + rawSrcFilePaths[index];
+            mf.addRule(new MakeRule(objFileName, val, [
+                '@$(CC) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName,
+                log.echoCommand(logMessage)
+            ]));
         });
-
-        return cmds.toString();
     }
 
     getString() {
-        var makefile = new StringBuilder();
-        makefile.appendLine(this._getVarsString());
-        makefile.appendLine(this._getCommandsString());
-        return makefile.toString();
+        this._setVariables();
+        this._setCommands();
+        
+        return this.makefile.toString();
     }
 };
 

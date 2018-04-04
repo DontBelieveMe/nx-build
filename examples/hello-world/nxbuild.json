@@ -1,6 +1,5 @@
 {
-    /* Potentially use this system? */
-    "target": 
+   "target": 
     {
         "name": "helloWorld",
         "type": "executable",
@@ -17,10 +16,7 @@
         "compilerFlags": "-Wall -Werror -Wpedantic"
     },
     "buildDir": "build", 
-    
-    "old-format":
-    {
-        "srcFiles": [
+       "srcFiles": [
             "src/main.c",
             "src/impl.c"
         ],
@@ -34,5 +30,4 @@
         "compilerFlags": "-Wall -Werror -Wpedantic",
         "targetName": "helloWorld",
         "targetType": "executable"
-    }
 }
