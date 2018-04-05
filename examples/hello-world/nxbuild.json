@@ -3,7 +3,8 @@
 
     "srcFiles": [
         "src/main.c",
-        "src/impl.c"
+        "src/impl.c",
+        "src/otherMain.cc"
     ],
     "headerFiles": [
         "include/main.h"

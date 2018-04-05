@@ -4,6 +4,7 @@ var StringBuilder = require('./string-builder');
 var path = require('path');
 var log = require('./log');
 var config = require('./config-options');
+var fileutils = require('./file-utils');
 
 class MakeVariable {
     constructor(name, value) {
@@ -38,6 +39,10 @@ class Makefile {
                 this.rulesBuilder.appendLine('\t' + val);
             });
         }
+    }
+    
+    appendToVariable(variable) {
+        this.variablesBuilder.appendLine(variable.name + "+=" + variable.value);
     }
 
     toString() {
@@ -149,6 +154,20 @@ class MakeGenerator {
         var nx = this.nbxConfig;
         return nx.linkerFlags; 
     }
+    
+    _getSubs() {
+        var extensions = [
+            'c',
+            'C', 'CPP', 'cpp', 'cxx', 'cp', 'c++', 'cc',
+            'S', 's'
+        ];
+        
+        var sb = new StringBuilder();
+        extensions.forEach((val, index, array)=>{
+            sb.append('$(notdir $(SOURCES:.' + val + '=.o)) ');
+        });
+        return sb.toString();
+    }
 
     _setVariables() {
         var mf = this.makefile;
@@ -161,8 +180,10 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('LDFLAGS', this._getLDFlags()));
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
-        mf.addVariable(new MakeVariable('ASM_SOURCES', this._getASMFileStrings()));
-        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(notdir $(SOURCES:.c=.o)) $(notdir $(ASM_SOURCES:.S=.o)))'));
+        mf.appendToVariable(new MakeVariable('SOURCES', this._getASMFileStrings()));
+        //mf.addVariable(new MakeVariable('ASM_SOURCES', this._getASMFileStrings()));
+        //mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(notdir $(SOURCES:.c=.o)) $(notdir $(ASM_SOURCES:.S=.o)))'));
+        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, ' + this._getSubs() + ')'));
         mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
     }
 
@@ -177,6 +198,13 @@ class MakeGenerator {
             return '$(CC) -shared -o lib' + nx.targetName + '.so $(OBJECTS)';
         }
     }
+    /*
+     * ------------------
+     * TODO: Fix -> 23:34 -> 5-4-18
+     * ------------------
+     *  [] There is a bug ATM w/ c++ files (in this case .cc) not having any target
+     *      (cannot meet target obj/otherMain.cc)
+     * */
 
     _setCommands() {
         var mf = this.makefile;
@@ -197,16 +225,21 @@ class MakeGenerator {
             var percentageThroughBuild = Math.round(((index + 1) / array.length) * 100);
             var logMessage = "[" + percentageThroughBuild + "%] Building file " + rawArray[index];
 
-            if(ext == '.S') {
+            if(fileutils.isASMExtension(ext)) {
                 mf.addRule(new MakeRule(objFileName, val, [
                     '@$(AS) $^ -o ' + objFileName,
                     log.echoCommand(logMessage)
                 ]));
-            } else {
+            } else if (fileutils.isCExtension(ext)) {
                 mf.addRule(new MakeRule(objFileName, val, [
                     '@$(CC) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName,
                     log.echoCommand(logMessage)
                 ]));
+            } else if (fileutils.isCppExtension(ext)) {
+                 mf.addRule(new MakeRule(objFileName, val, [
+                    '@$(CXX) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName,
+                    log.echoCommand(logMessage)
+                ]));        
             }
         });
     }
