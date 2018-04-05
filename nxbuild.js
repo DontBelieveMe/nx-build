@@ -36,8 +36,16 @@ fs.readFile(rootDir + '/nxbuild.json', function(err, data) {
     var makeGenerator = new MakeGenerator(nbxConfig);
     
     var buildDir = nbxConfig.buildDir;
-    deleteFolderRecursive(buildDir);
-    fs.mkdirSync(buildDir);
+    if(!fs.existsSync(buildDir)) {
+        fs.mkdirSync(buildDir);
+    }
+
+    if(fs.existsSync(buildDir + '/Makefile'))
+        fs.unlinkSync(buildDir + '/Makefile');
+    if(fs.existsSync(buildDir + '/' + nbxConfig.targetName))
+        fs.unlinkSync(buildDir + '/' + nbxConfig.targetName);
+
+    deleteFolderRecursive(buildDir + '/obj');
     fs.mkdirSync(buildDir + '/obj');
     
     fs.writeFileSync('build/Makefile', makeGenerator.getString());

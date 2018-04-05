@@ -25,6 +25,10 @@ class ConfigSanitizer {
             nx.targetType = "executable";
         }
         
+        if(nx.linkerFlags === undefined) {
+            nx.linkerFlags = "";
+        }
+
         // TODO: Fix these to auto detect system compiler
         if(nx.cCompiler === undefined) {
             nx.cCompiler = "gcc"; 
@@ -33,7 +37,13 @@ class ConfigSanitizer {
         if(nx.cppCompiler === undefined) {
             nx.cppCompiler = "g++";
         }
-
+        
+        if(nx.assembler === undefined) {
+            nx.assembler = "as";
+        }
+        if(nx.asmFiles === undefined) {
+            nx.asmFiles = [];
+        }
         return nx;
     }
 };

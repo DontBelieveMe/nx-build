@@ -68,6 +68,16 @@ class MakeGenerator {
         return srcs;
     }
 
+    _getASMRelativeArray() {
+        var nx = this.nbxConfig;
+        var asms = [];
+        nx.asmFiles.forEach((val, index, array) => {
+            var relDir = path.relative(process.cwd() + '/' + nx.buildDir, path.dirname(val));
+            asms.push(path.join(relDir, path.basename(val)));
+        });
+        return asms;
+    }
+
     _getCompilerFlagsString() {
         var nbx = this.nbxConfig;
 
@@ -115,12 +125,29 @@ class MakeGenerator {
             if(index > 0)
                 includes.append(' ');
 
-            var incDir = path.relative(process.cwd() + '/' + nbx.buildDir, path.dirname(val)) + '/' + val;
-
+            var incDir = path.relative(process.cwd() + '/' + nbx.buildDir, path.dirname(val));
+            var a = val.split('/');
+            incDir += '/' + a[a.length - 1];
             includes.append('-I' + incDir);
         });
 
         return includes.toString();
+    }
+    
+    _getASMFileStrings() {
+        var arr = this._getASMRelativeArray();
+        var nx = this.nbxConfig;
+        var asmString = new StringBuilder();
+        arr.forEach((val, index, arr) => {
+            if(index > 0) asmString.append(' ');
+            asmString.append(val);
+        });
+        return asmString.toString();
+    }
+    
+    _getLDFlags() {
+        var nx = this.nbxConfig;
+        return nx.linkerFlags; 
     }
 
     _setVariables() {
@@ -129,11 +156,13 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('CC', this.nbxConfig.cCompiler));
         mf.addVariable(new MakeVariable('CXX', this.nbxConfig.cppCompiler));
         mf.addVariable(new MakeVariable('AR', 'ar'));
+        mf.addVariable(new MakeVariable('AS', this.nbxConfig.assembler));
         mf.addVariable(new MakeVariable('CFLAGS', this._getCompilerFlagsString()));
-        mf.addVariable(new MakeVariable('LDFLAGS', ''));
+        mf.addVariable(new MakeVariable('LDFLAGS', this._getLDFlags()));
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
-        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(notdir $(SOURCES:.c=.o)))'));
+        mf.addVariable(new MakeVariable('ASM_SOURCES', this._getASMFileStrings()));
+        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(notdir $(SOURCES:.c=.o)) $(notdir $(ASM_SOURCES:.S=.o)))'));
         mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
     }
 
@@ -154,20 +183,31 @@ class MakeGenerator {
         mf.addRule(new MakeRule('all', '$(SOURCES) $(TARGET_NAME)'));
         mf.addRule(new MakeRule('$(TARGET_NAME)', '$(OBJECTS)', [
             '@' + this._getLinkingCommand(),
-            log.echoCommand("Linking target!")
+            log.echoCommand("Linking target " + this.nbxConfig.targetName)
         ]));
 
-        var rawSrcFilePaths = this.nbxConfig.srcFiles;
-        this._getSourceRelativeArray().forEach((val, index, array) => {
-            var filename = path.basename(val, '.c');
+        var rawArray = this.nbxConfig.srcFiles.concat(this.nbxConfig.asmFiles);
+
+        var all = this._getSourceRelativeArray().concat(this._getASMRelativeArray());
+
+        all.forEach((val, index, array) => {
+            var ext = path.extname(val);
+            var filename = path.basename(val, ext);
             var objFileName = this.objFileDir + '/' + filename + '.o';
             var percentageThroughBuild = Math.round(((index + 1) / array.length) * 100);
-            
-            var logMessage = '[' + percentageThroughBuild + '%] Building file ' + rawSrcFilePaths[index];
-            mf.addRule(new MakeRule(objFileName, val, [
-                '@$(CC) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName,
-                log.echoCommand(logMessage)
-            ]));
+            var logMessage = "[" + percentageThroughBuild + "%] Building file " + rawArray[index];
+
+            if(ext == '.S') {
+                mf.addRule(new MakeRule(objFileName, val, [
+                    '@$(AS) $^ -o ' + objFileName,
+                    log.echoCommand(logMessage)
+                ]));
+            } else {
+                mf.addRule(new MakeRule(objFileName, val, [
+                    '@$(CC) $(INCLUDEDIRS) -c $(CFLAGS) $^ -o ' + objFileName,
+                    log.echoCommand(logMessage)
+                ]));
+            }
         });
     }
 
