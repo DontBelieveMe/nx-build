@@ -164,7 +164,7 @@ class MakeGenerator {
         
         var sb = new StringBuilder();
         extensions.forEach((val, index, array)=>{
-            sb.append('$(notdir $(SOURCES:.' + val + '=.o)) ');
+            sb.append('$(SOURCES:.' + val + '=.o) ');
         });
         return sb.toString();
     }
@@ -181,9 +181,7 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
         mf.appendToVariable(new MakeVariable('SOURCES', this._getASMFileStrings()));
-        //mf.addVariable(new MakeVariable('ASM_SOURCES', this._getASMFileStrings()));
-        //mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(notdir $(SOURCES:.c=.o)) $(notdir $(ASM_SOURCES:.S=.o)))'));
-        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, ' + this._getSubs() + ')'));
+        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(filter %.o, $(notdir ' + this._getSubs() + ')))'));
         mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
     }
 
