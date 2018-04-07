@@ -1,0 +1,90 @@
+[1mdiff --git a/nxbuild.js b/nxbuild.js[m
+[1mindex e069b1c..2def9c3 100755[m
+[1m--- a/nxbuild.js[m
+[1m+++ b/nxbuild.js[m
+[36m@@ -6,7 +6,7 @@[m [mvar rootDir = process.cwd();[m
+ var exec = require('child_process').exec;[m
+ var log = require('./nxlib/log');[m
+ var MakeGenerator = require('./nxlib/make-generator');[m
+[31m-var ConfigSanitizer = require('./nxlib/config-defaults');[m
+[32m+[m[32mvar ConfigSanitizer = require('./nxlib/config-sanatizer');[m
+ [m
+ // https://geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/[m
+ var deleteFolderRecursive = function(path) {[m
+[1mdiff --git a/nxlib/config-defaults.js b/nxlib/config-defaults.js[m
+[1mdeleted file mode 100644[m
+[1mindex 3d99745..0000000[m
+[1m--- a/nxlib/config-defaults.js[m
+[1m+++ /dev/null[m
+[36m@@ -1,51 +0,0 @@[m
+[31m-class ConfigSanitizer {[m
+[31m-    constructor(nxConfig) {[m
+[31m-        this.nxConfig = nxConfig;[m
+[31m-    }[m
+[31m-    [m
+[31m-    sanatize() {[m
+[31m-        var nx = this.nxConfig;[m
+[31m-[m
+[31m-        if(nx.srcFiles === undefined) {[m
+[31m-            console.log("ERROR: Please specify at least one source file");[m
+[31m-            return undefined;[m
+[31m-        }[m
+[31m-[m
+[31m-        if(nx.buildDir === undefined) {[m
+[31m-            console.log("ERROR: Please specify a build directory");[m
+[31m-            return undefined;[m
+[31m-        }[m
+[31m-[m
+[31m-        if(nx.targetName === undefined) {[m
+[31m-            console.log("ERROR: Please specify a target name");[m
+[31m-            return undefined;[m
+[31m-        }[m
+[31m-[m
+[31m-        if(nx.targetType === undefined) {[m
+[31m-            nx.targetType = "executable";[m
+[31m-        }[m
+[31m-        [m
+[31m-        if(nx.linkerFlags === undefined) {[m
+[31m-            nx.linkerFlags = "";[m
+[31m-        }[m
+[31m-[m
+[31m-        // TODO: Fix these to auto detect system compiler[m
+[31m-        if(nx.cCompiler === undefined) {[m
+[31m-            nx.cCompiler = "gcc"; [m
+[31m-        }[m
+[31m-[m
+[31m-        if(nx.cppCompiler === undefined) {[m
+[31m-            nx.cppCompiler = "g++";[m
+[31m-        }[m
+[31m-        [m
+[31m-        if(nx.assembler === undefined) {[m
+[31m-            nx.assembler = "as";[m
+[31m-        }[m
+[31m-        if(nx.asmFiles === undefined) {[m
+[31m-            nx.asmFiles = [];[m
+[31m-        }[m
+[31m-        return nx;[m
+[31m-    }[m
+[31m-};[m
+[31m-[m
+[31m-module.exports = ConfigSanitizer;[m
+[1mdiff --git a/nxlib/make-generator.js b/nxlib/make-generator.js[m
+[1mindex 2c5a1e3..e688c7e 100644[m
+[1m--- a/nxlib/make-generator.js[m
+[1m+++ b/nxlib/make-generator.js[m
+[36m@@ -196,14 +196,7 @@[m [mclass MakeGenerator {[m
+             return '$(CC) -shared -o lib' + nx.targetName + '.so $(OBJECTS)';[m
+         }[m
+     }[m
+[31m-    /*[m
+[31m-     * ------------------[m
+[31m-     * TODO: Fix -> 23:34 -> 5-4-18[m
+[31m-     * ------------------[m
+[31m-     *  [] There is a bug ATM w/ c++ files (in this case .cc) not having any target[m
+[31m-     *      (cannot meet target obj/otherMain.cc)[m
+[31m-     * */[m
+[31m-[m
+[32m+[m[41m [m
+     _setCommands() {[m
+         var mf = this.makefile;[m
+         mf.addRule(new MakeRule('all', '$(SOURCES) $(TARGET_NAME)'));[m

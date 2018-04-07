@@ -6,7 +6,7 @@ var rootDir = process.cwd();
 var exec = require('child_process').exec;
 var log = require('./nxlib/log');
 var MakeGenerator = require('./nxlib/make-generator');
-var ConfigSanitizer = require('./nxlib/config-defaults');
+var ConfigSanitizer = require('./nxlib/config-sanatizer');
 
 // https://geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/
 var deleteFolderRecursive = function(path) {

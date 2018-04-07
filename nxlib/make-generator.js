@@ -196,14 +196,7 @@ class MakeGenerator {
             return '$(CC) -shared -o lib' + nx.targetName + '.so $(OBJECTS)';
         }
     }
-    /*
-     * ------------------
-     * TODO: Fix -> 23:34 -> 5-4-18
-     * ------------------
-     *  [] There is a bug ATM w/ c++ files (in this case .cc) not having any target
-     *      (cannot meet target obj/otherMain.cc)
-     * */
-
+ 
     _setCommands() {
         var mf = this.makefile;
         mf.addRule(new MakeRule('all', '$(SOURCES) $(TARGET_NAME)'));
