@@ -16,7 +16,7 @@ class ConfigSanitizer {
         };
     }
     
-    sanatize() {
+    sanitize() {
         var nx = this.nxConfig;
         
         this.required.forEach((val, index, arr) => {
