@@ -57,6 +57,15 @@ typings/
 # dotenv environment variables file
 .env
 
+# Vim (GODDAMMIT VIM, GOT DAMMIT TO HELL!)
+# (To be read in the gravelly voice of a chainsmoking veteran cop who was 
+# recently told that his partner has been killed just 2 weeks off retirement)
+
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+
 # Project specific
 build/
 *.o
