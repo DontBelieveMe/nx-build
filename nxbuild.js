@@ -5,7 +5,7 @@ var fs = require('fs');
 var rootDir = process.cwd();
 var exec = require('child_process').exec;
 var log = require('./nxlib/log');
-var MakeGenerator = require('./nxlib/make-generator');
+var MakeGenerator = require('./nxlib/gnuMake/make-generator');
 var ConfigSanitizer = require('./nxlib/config-sanitizer');
 
 // https://geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/

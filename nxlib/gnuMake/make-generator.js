@@ -1,57 +1,15 @@
 'use strict';
 
-var StringBuilder = require('./string-builder');
 var path = require('path');
-var log = require('./log');
-var config = require('./config-options');
-var fileutils = require('./file-utils');
 
-class MakeVariable {
-    constructor(name, value) {
-        this.name = name;
-        this.value = value;
-    }
-}
+var log = require('../log');
+var config = require('../config-options');
+var fileutils = require('../file-utils');
 
-class MakeRule {
-    constructor(target, prerequisites, commands) {
-        this.target = target;
-        this.prerequisites = prerequisites;
-        this.commands = commands;
-    }
-}
-
-class Makefile {
-    constructor() {
-        this.variablesBuilder = new StringBuilder();
-        this.rulesBuilder = new StringBuilder();
-    }
-
-    addVariable(variable) {
-        this.variablesBuilder.appendLine(variable.name + ":=" + variable.value);
-    }
-
-    addRule(rule) {
-        this.rulesBuilder.appendLine(rule.target + ': ' + rule.prerequisites);
-        
-        if(rule.commands !== undefined) {
-            rule.commands.forEach((val, index, array) => {
-                this.rulesBuilder.appendLine('\t' + val);
-            });
-        }
-    }
-    
-    appendToVariable(variable) {
-        this.variablesBuilder.appendLine(variable.name + "+=" + variable.value);
-    }
-
-    toString() {
-        var mf = new StringBuilder();
-        mf.appendLine(this.variablesBuilder.toString());
-        mf.appendLine(this.rulesBuilder.toString());
-        return mf.toString();
-    }
-}
+var StringBuilder = require('../string-builder');
+var Makefile = require('./makefile');
+var MakeRule = require('./make-rule');
+var MakeVariable = require('./make-variable');
 
 class MakeGenerator {
     constructor(nbxConfig) {

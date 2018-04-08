@@ -12,7 +12,8 @@ class ConfigSanitizer {
             "targetType": "executable",
             "linkerFlags": "",
             "assembler": "as",
-            "asmFiles": []
+            "asmFiles": [],
+            "variables": []
         };
     }
     
