@@ -46,26 +46,28 @@ class MakeGenerator {
         return this._makeFilePathsRelativeToBuildDir(nx.asmFiles);
     }
 
-    _getCompilerFlagsString() {
-        var nbx = this.nbxConfig;
+    _parseFlagsConfigOption(configOption) {
+        var nx = this.nbxConfig;
 
-        if(nbx.compilerFlags === undefined)
-            return '';
-
-        if(Array.isArray(nbx.compilerFlags)) {
+        if(Array.isArray(configOption)) {
             var sb = new StringBuilder();
-            nbx.compilerFlags.forEach((val, index, array) => {
+            configOption.forEach((option, index) => {
                 if(index > 0) {
                     sb.append(' ');
                 }
 
-                sb.append(val);
+                sb.append(option);
             });
-            
+
             return sb.toString();
-        } else if(typeof nbx.compilerFlags === "string") {
-            return nbx.compilerFlags;
+        } else if(typeof configOption === 'string') {
+            return configOption;
         }
+    }
+
+    _getCompilerFlagsString() {
+        var nx = this.nbxConfig;
+        return this._parseFlagsConfigOption(nx.compilerFlags);
     }
 
     _getSourcesString() {
@@ -115,7 +117,7 @@ class MakeGenerator {
     
     _getLDFlags() {
         var nx = this.nbxConfig;
-        return nx.linkerFlags; 
+        return this._parseFlagsConfigOption(nx.linkerFlags);
     }
     
     _getSubs() {
@@ -166,7 +168,7 @@ class MakeGenerator {
         var rawArray = this.nbxConfig.srcFiles.concat(this.nbxConfig.asmFiles);
 
         var all = this._getSourceRelativeArray().concat(this._getASMRelativeArray());
-        console.log(fileutils.isCppExtension());
+        
         all.forEach((val, index, array) => {
             var ext = path.extname(val);
             var filename = path.basename(val, ext);

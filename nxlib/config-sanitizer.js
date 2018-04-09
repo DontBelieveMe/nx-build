@@ -11,6 +11,7 @@ class ConfigSanitizer {
             "cppCompiler": "g++",
             "targetType": "executable",
             "linkerFlags": "",
+            "compilerFlags": "",
             "assembler": "as",
             "asmFiles": [],
             "variables": []
