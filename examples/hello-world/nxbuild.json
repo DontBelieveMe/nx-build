@@ -14,7 +14,12 @@
         "include"
     ],
 
-    "compilerFlags": "-Wall -Werror -Wpedantic",
+    "compilerFlags": [
+        "-Wall",
+        "-Werror",
+        "-Wpedantic"
+    ],
+    
     "targetName": "helloWorld",
     "targetType": "executable",
     "cCompiler": "gcc",
