@@ -36,14 +36,7 @@ class MakeGenerator {
 
     _getSourceRelativeArray() {
         var nx = this.nbxConfig;
-
         return this._makeFilePathsRelativeToBuildDir(nx.srcFiles);
-    }
-
-    _getASMRelativeArray() {
-        var nx = this.nbxConfig;
-        
-        return this._makeFilePathsRelativeToBuildDir(nx.asmFiles);
     }
 
     _parseFlagsConfigOption(configOption) {
@@ -80,6 +73,9 @@ class MakeGenerator {
             }
 
             srcs.append(val);
+            if(index < array.length - 1) {
+                srcs.append(' \\\n');
+            }
         });
 
         return srcs.toString();
@@ -102,17 +98,6 @@ class MakeGenerator {
         });
 
         return includes.toString();
-    }
-    
-    _getASMFileStrings() {
-        var arr = this._getASMRelativeArray();
-        var nx = this.nbxConfig;
-        var asmString = new StringBuilder();
-        arr.forEach((val, index, arr) => {
-            if(index > 0) asmString.append(' ');
-            asmString.append(val);
-        });
-        return asmString.toString();
     }
     
     _getLDFlags() {
@@ -140,7 +125,6 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('LDFLAGS', this._getLDFlags()));
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
-        mf.appendToVariable(new MakeVariable('SOURCES', this._getASMFileStrings()));
         mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(filter %.o, $(notdir ' + this._getSubs() + ')))'));
         mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
     }
@@ -167,7 +151,7 @@ class MakeGenerator {
 
         var rawArray = this.nbxConfig.srcFiles.concat(this.nbxConfig.asmFiles);
 
-        var all = this._getSourceRelativeArray().concat(this._getASMRelativeArray());
+        var all = this._getSourceRelativeArray();
         
         all.forEach((val, index, array) => {
             var ext = path.extname(val);
