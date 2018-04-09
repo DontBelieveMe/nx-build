@@ -1,8 +1,8 @@
-#include <iostream>
+#include <stdio.h>
 
 class HelloWorld {
 public:
     HelloWorld() {
-        std::cout << "Hello World!" << std::endl;
+        printf("Hello World!");
     }
-}
+};

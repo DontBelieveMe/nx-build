@@ -19,26 +19,31 @@ class MakeGenerator {
         this.makefile = new Makefile();
     }
 
-    _getSourceRelativeArray() {
-        var nbx = this.nbxConfig;
-        var srcs = [];
+    _makeFilePathsRelativeToBuildDir(array) {
+        var nx = this.nbxConfig;
+        var relativePathsOut = [];
 
-        nbx.srcFiles.forEach((val, index, array) => {
-            var relDir = path.relative(process.cwd() + '/' + nbx.buildDir, path.dirname(val));
-            srcs.push(path.join(relDir, path.basename(val)));
+        var configFileDir = process.cwd();
+        var buildDir = path.join(configFileDir, nx.buildDir);
+
+        array.forEach((filePath) => {
+            var relativeDir = path.relative(buildDir, path.dirname(filePath));
+            relativePathsOut.push(path.join(relativeDir, path.basename(filePath)));
         });
 
-        return srcs;
+        return relativePathsOut;
+    }
+
+    _getSourceRelativeArray() {
+        var nx = this.nbxConfig;
+
+        return this._makeFilePathsRelativeToBuildDir(nx.srcFiles);
     }
 
     _getASMRelativeArray() {
         var nx = this.nbxConfig;
-        var asms = [];
-        nx.asmFiles.forEach((val, index, array) => {
-            var relDir = path.relative(process.cwd() + '/' + nx.buildDir, path.dirname(val));
-            asms.push(path.join(relDir, path.basename(val)));
-        });
-        return asms;
+        
+        return this._makeFilePathsRelativeToBuildDir(nx.asmFiles);
     }
 
     _getCompilerFlagsString() {
