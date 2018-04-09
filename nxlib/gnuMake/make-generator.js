@@ -105,18 +105,36 @@ class MakeGenerator {
         return this._parseFlagsConfigOption(nx.linkerFlags);
     }
     
-    _getSubs() {
-        var sb = new StringBuilder();
-        var extensions = fileutils.validSourceExtensions;
-        extensions.forEach((val, index, array)=>{
-            sb.append('$(SOURCES:.' + val + '=.o) ');
+    _getSourceExtensionObjectFileSubstitutions() {
+        let sb = new StringBuilder();
+        let extensions = [];
+
+        // Lets only substitute file extensions that are used.
+        let srcFiles = this._getSourceRelativeArray();
+        srcFiles.forEach((val) => {
+            let ext = path.extname(val);
+            ext = fileutils.normalizeExtension(ext);
+            if(!extensions.includes(ext)) {
+                extensions.push(ext);
+            }
         });
+
+        extensions.forEach((val, index, array) => {
+            sb.append('$(SOURCES:.' + val + '=.o)');
+            if(index < array.length - 1) {
+                sb.append(' ');
+            }
+        });
+
         return sb.toString();
     }
 
     _setVariables() {
-        var mf = this.makefile;
+        let mf = this.makefile;
         
+        let subsArrayString = this._getSourceExtensionObjectFileSubstitutions();
+        let substitutions = '$(addprefix obj/, $(filter %.o, $(notdir ' + subsArrayString + ')))';
+
         mf.addVariable(new MakeVariable('CC', this.nbxConfig.cCompiler));
         mf.addVariable(new MakeVariable('CXX', this.nbxConfig.cppCompiler));
         mf.addVariable(new MakeVariable('AR', 'ar'));
@@ -125,7 +143,7 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('LDFLAGS', this._getLDFlags()));
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
-        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(filter %.o, $(notdir ' + this._getSubs() + ')))'));
+        mf.addVariable(new MakeVariable('OBJECTS', substitutions));
         mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
     }
 
