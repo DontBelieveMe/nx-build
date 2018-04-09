@@ -119,13 +119,8 @@ class MakeGenerator {
     }
     
     _getSubs() {
-        var extensions = [
-            'c',
-            'C', 'CPP', 'cpp', 'cxx', 'cp', 'c++', 'cc',
-            'S', 's'
-        ];
-        
         var sb = new StringBuilder();
+        var extensions = fileutils.validSourceExtensions;
         extensions.forEach((val, index, array)=>{
             sb.append('$(SOURCES:.' + val + '=.o) ');
         });
@@ -171,7 +166,7 @@ class MakeGenerator {
         var rawArray = this.nbxConfig.srcFiles.concat(this.nbxConfig.asmFiles);
 
         var all = this._getSourceRelativeArray().concat(this._getASMRelativeArray());
-
+        console.log(fileutils.isCppExtension());
         all.forEach((val, index, array) => {
             var ext = path.extname(val);
             var filename = path.basename(val, ext);
