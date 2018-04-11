@@ -16,3 +16,15 @@ log.echoCommand = function(msg) {
 
     return sb.toString();
 }
+
+var logErrorMessages = false;
+
+log.enableErrors = function(bEnableErrors) {
+    logErrorMessages = bEnableErrors;
+}
+
+log.error = function(msg) {
+    if(logErrorMessages) {
+        console.log("--- Error: " + msg);
+    }
+}

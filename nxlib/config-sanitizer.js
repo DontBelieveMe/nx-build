@@ -1,3 +1,5 @@
+var log = require('./log');
+
 class ConfigSanitizer {
     constructor(nxConfig) {
         this.nxConfig = nxConfig;
@@ -19,25 +21,37 @@ class ConfigSanitizer {
         };
     }
     
-    sanitize() {
-        var nx = this.nxConfig;
-        
+    checkRequiredOptions(nxConfig) {
         this.required.forEach((val, index, arr) => {
-            if(nx !== undefined) {
-                if(nx[val] === undefined) {
-                    console.log("--- ERROR: " + val + " is not specified");
-                    nx = undefined;
+            if(nxConfig !== undefined) {
+                if(nxConfig[val] === undefined) {
+                    log.error(val + ' is not specified');
+                    nxConfig = undefined;
                 }
             }
         });
 
-        if(nx === undefined) return nx;
-        
+        return nxConfig;
+    }
+
+    applyDefaults(nxConfig) {
         for(var key in this.defaults) {
-            if(nx[key] === undefined) {
-                nx[key] = this.defaults[key];
+            if(nxConfig[key] === undefined) {
+                nxConfig[key] = this.defaults[key];
             }
         } 
+
+        return nxConfig;
+    }
+
+    sanitize() {
+        var nx = this.nxConfig;        
+        nx = this.checkRequiredOptions(nx);
+
+        if(nx === undefined) 
+            return nx;
+        
+        nx = this.applyDefaults(nx);
         
         return nx;
     }
