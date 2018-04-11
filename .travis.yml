@@ -3,3 +3,5 @@ node_js:
     - "node"
     - "7"
 
+ after_success:
+    - npm run coveralls 
