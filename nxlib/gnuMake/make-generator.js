@@ -131,8 +131,7 @@ class MakeGenerator {
 
     _getLibs() {
         let configLibs = this.nbxConfig.libs;
-        // TODO: For now assume libs is an array of library names excluding extensions and
-        // `lib` prefix.
+        // TODO: For now assume libs is in array form
         
         let libsStr = new StringBuilder();
 
