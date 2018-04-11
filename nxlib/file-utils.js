@@ -19,7 +19,7 @@ fileutils.validSourceExtensions = fileutils.cppFileExtensions.concat(fileutils.c
 // for example, for the input '.exe' -> 'exe' is returned
 // but for 'exe' -> 'exe' is just returned.
 fileutils.normalizeExtension = function(ext) {
-    if(ext === undefined) {
+    if(ext === undefined || ext === null) {
         return undefined;
     }
 

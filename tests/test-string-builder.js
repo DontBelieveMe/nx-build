@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var StringBuilder = require('../nxlib/string-builder.js');
+var StringBuilder = require('../nxlib/string-builder');
 
 describe('StringBuilder', function(){
     describe('#append()', function() {
@@ -8,7 +8,7 @@ describe('StringBuilder', function(){
             var sb = new StringBuilder();
             sb.append('str1');
             sb.append('str2');
-            assert.equal('str1str2', sb.toString());
+            assert.strictEqual('str1str2', sb.toString());
         });
 
         it('should add an empty string when string parameter is undefined or null', function(){
@@ -17,7 +17,7 @@ describe('StringBuilder', function(){
             sb.append(null);
             sb.append();
 
-            assert.equal('', sb.toString());
+            assert.strictEqual('', sb.toString());
         });
     });
 
@@ -27,7 +27,7 @@ describe('StringBuilder', function(){
             sb.appendLine('helloWorld');
             sb.appendLine('nextLine');
 
-            assert.equal('helloWorld\nnextLine\n', sb.toString());
+            assert.strictEqual('helloWorld\nnextLine\n', sb.toString());
         });
 
         it('should append a single newline when the input parameter is undefined or null', function(){
@@ -36,7 +36,7 @@ describe('StringBuilder', function(){
             sb.appendLine(null);
             sb.appendLine();
 
-            assert.equal('\n\n\n', sb.toString());
+            assert.strictEqual('\n\n\n', sb.toString());
         });
     });
 });
