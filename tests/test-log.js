@@ -41,4 +41,31 @@ describe('log', function(){
         });
     });
 
+    describe('#error()', function(){
+        it('should write to stdout if log.enableErrors(true) is set', function(){
+            var logged = false;
+            log.stdout = function(m) {
+                logged = true;
+            };
+
+            log.enableErrors(true);
+            log.error("output");
+
+            assert.strictEqual(logged, true);
+            
+            log.stdout = console.log;
+        });
+
+        it('should not output any message if errors are disabled', function(){
+            var logged = false;
+            log.stdout = function(m) { logged = true; }
+            log.enableErrors(false);
+            log.error("output");
+            log.enableErrors(true);
+
+            assert.strictEqual(logged, false);
+
+            log.stdout = console.log;
+        });
+    });
 });

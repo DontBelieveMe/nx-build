@@ -19,12 +19,14 @@ log.echoCommand = function(msg) {
 
 var logErrorMessages = false;
 
+log.stdout = console.log;
+
 log.enableErrors = function(bEnableErrors) {
     logErrorMessages = bEnableErrors;
 }
 
 log.error = function(msg) {
     if(logErrorMessages) {
-        console.log("--- Error: " + msg);
+        log.stdout("--- Error: " + msg);
     }
 }
