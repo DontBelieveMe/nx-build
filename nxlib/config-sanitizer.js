@@ -14,7 +14,8 @@ class ConfigSanitizer {
             "compilerFlags": "",
             "assembler": "as",
             "asmFiles": [],
-            "variables": []
+            "variables": [],
+            "libs": []
         };
     }
     

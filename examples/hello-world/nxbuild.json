@@ -14,14 +14,13 @@
         "include"
     ],
 
-    "compilerFlags": [
-        "-Wall",
-        "-Werror",
-        "-Wpedantic"
-    ],
-    
+    "compilerFlags": "-Wall -Werror -Wpedantic -fno-builtin",
     "targetName": "helloWorld",
     "targetType": "executable",
     "cCompiler": "gcc",
-    "cppCompiler": "g++" 
+    "cppCompiler": "g++",
+    
+    "libs": [
+        "m"
+    ]
 }

@@ -1,7 +1,10 @@
+#include <math.h>
 #include <stdio.h>
-#include <main.h>
 
-int main()
+int
+main (void)
 {
-    WriteToConsole("This is written from a function!");
+  double x = sqrt (2.0);
+  printf ("The square root of 2.0 is %f\n", x);
+  return 0;
 }

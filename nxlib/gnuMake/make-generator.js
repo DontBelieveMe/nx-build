@@ -40,12 +40,6 @@ class MakeGenerator {
         return this._makeFilePathsRelativeToBuildDir(nx.srcFiles);
     }
 
-    _getASMRelativeArray() {
-        var nx = this.nxConfig;
-        
-        return this._makeFilePathsRelativeToBuildDir(nx.asmFiles);
-    }
-
     _parseFlagsConfigOption(configOption) {
         var nx = this.nxConfig;
 
@@ -80,6 +74,9 @@ class MakeGenerator {
             }
 
             srcs.append(val);
+            if(index < array.length - 1) {
+                srcs.append(' \\\n');
+            }
         });
 
         return srcs.toString();
@@ -104,52 +101,81 @@ class MakeGenerator {
         return includes.toString();
     }
     
-    _getASMFileStrings() {
-        var arr = this._getASMRelativeArray();
-        var nx = this.nxConfig;
-        var asmString = new StringBuilder();
-        arr.forEach((val, index, arr) => {
-            if(index > 0) asmString.append(' ');
-            asmString.append(val);
-        });
-        return asmString.toString();
-    }
-    
-    _getLinkerFlags() {
-        var nx = this.nxConfig;
+    _getLDFlags() {
+        var nx = this.nbxConfig;
         return this._parseFlagsConfigOption(nx.linkerFlags);
     }
     
-    _getSubs() {
-        var sb = new StringBuilder();
-        var extensions = fileutils.validSourceExtensions;
-        extensions.forEach((val, index, array)=>{
-            sb.append('$(SOURCES:.' + val + '=.o) ');
+    _getSourceExtensionObjectFileSubstitutions() {
+        let sb = new StringBuilder();
+        let extensions = [];
+
+        // Lets only substitute file extensions that are used.
+        let srcFiles = this._getSourceRelativeArray();
+        srcFiles.forEach((val) => {
+            let ext = path.extname(val);
+            ext = fileutils.normalizeExtension(ext);
+            if(!extensions.includes(ext)) {
+                extensions.push(ext);
+            }
         });
+
+        extensions.forEach((val, index, array) => {
+            sb.append('$(SOURCES:.' + val + '=.o)');
+            if(index < array.length - 1) {
+                sb.append(' ');
+            }
+        });
+
         return sb.toString();
     }
 
-    _setVariables() {
-        var mf = this.makefile;
+    _getLibs() {
+        let configLibs = this.nbxConfig.libs;
+        // TODO: For now assume libs is in array form
         
-        mf.addVariable(new MakeVariable('CC', this.nxConfig.cCompiler));
-        mf.addVariable(new MakeVariable('CXX', this.nxConfig.cppCompiler));
+        let libsStr = new StringBuilder();
+
+        configLibs.forEach((libName, index) => {
+            // Lets normalize any library input to be just the name of the library
+            // (e.g excluding `lib` prefix or any suffixes/extensions
+            let re = /-l/;
+            let normalizedName = libName.replace(re, '');
+            
+            if(index > 0) {
+                libsStr.append(' ');
+            }
+            
+            libsStr.append('-l' + normalizedName);
+        });
+
+        return libsStr.toString();
+    }
+
+    _setVariables() {
+        let mf = this.makefile;
+        
+        let subsArrayString = this._getSourceExtensionObjectFileSubstitutions();
+        let substitutions = '$(addprefix obj/, $(filter %.o, $(notdir ' + subsArrayString + ')))';
+
+        mf.addVariable(new MakeVariable('CC', this.nbxConfig.cCompiler));
+        mf.addVariable(new MakeVariable('CXX', this.nbxConfig.cppCompiler));
         mf.addVariable(new MakeVariable('AR', 'ar'));
         mf.addVariable(new MakeVariable('AS', this.nxConfig.assembler));
         mf.addVariable(new MakeVariable('CFLAGS', this._getCompilerFlagsString()));
         mf.addVariable(new MakeVariable('LDFLAGS', this._getLinkerFlags()));
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
-        mf.appendToVariable(new MakeVariable('SOURCES', this._getASMFileStrings()));
-        mf.addVariable(new MakeVariable('OBJECTS', '$(addprefix obj/, $(filter %.o, $(notdir ' + this._getSubs() + ')))'));
-        mf.addVariable(new MakeVariable('TARGET_NAME', this.nxConfig.targetName));
+        mf.addVariable(new MakeVariable('OBJECTS', substitutions));
+        mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
+        mf.addVariable(new MakeVariable('LIBS', this._getLibs()));
     }
 
     _getLinkingCommand() {
         var nx = this.nxConfig;
 
         if(config.hasExecutableTarget(nx)) {
-            return '$(CC) $(LDFLAGS) $(OBJECTS) -o $@';
+            return '$(CC) $(OBJECTS) -o $@ $(LDFLAGS) $(LIBS)';
         } else if(config.hasStaticLibTarget(nx)) {
             return '$(AR) crf lib' + nx.targetName + '.a $(OBJECTS)'; 
         } else if(config.hasSharedLibTarget(nx)) {
@@ -167,8 +193,8 @@ class MakeGenerator {
 
         var rawArray = this.nxConfig.srcFiles.concat(this.nxConfig.asmFiles);
 
-        var all = this._getSourceRelativeArray().concat(this._getASMRelativeArray());
-
+        var all = this._getSourceRelativeArray();
+        
         all.forEach((val, index, array) => {
             var ext = path.extname(val);
             var filename = path.basename(val, ext);

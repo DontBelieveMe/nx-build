@@ -15,6 +15,9 @@ class StringBuilder {
     }
 
     append(str) {
+        if(str === undefined || str === null)
+            return;
+
         this.m_data += str;
     }
 
