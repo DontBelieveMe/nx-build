@@ -1,4 +1,4 @@
-# nx-build - A Javascript based project file generator (for C & C++)
+# nx-build - A Javascript based project file generator
 #### (Because you know JavaScript gets everywhere else these days)
 [![Build Status](https://travis-ci.org/DontBelieveMe/nx-build.svg?branch=master)](https://travis-ci.org/DontBelieveMe/nx-build) [![Coverage Status](https://coveralls.io/repos/github/DontBelieveMe/nx-build/badge.svg?branch=master)](https://coveralls.io/github/DontBelieveMe/nx-build?branch=master)
 
