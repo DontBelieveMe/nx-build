@@ -129,6 +129,29 @@ class MakeGenerator {
         return sb.toString();
     }
 
+    _getLibs() {
+        let configLibs = this.nbxConfig.libs;
+        // TODO: For now assume libs is an array of library names excluding extensions and
+        // `lib` prefix.
+        
+        let libsStr = new StringBuilder();
+
+        configLibs.forEach((libName, index) => {
+            // Lets normalize any library input to be just the name of the library
+            // (e.g excluding `lib` prefix or any suffixes/extensions
+            let re = /-l/;
+            let normalizedName = libName.replace(re, '');
+            
+            if(index > 0) {
+                libsStr.append(' ');
+            }
+            
+            libsStr.append('-l' + normalizedName);
+        });
+
+        return libsStr.toString();
+    }
+
     _setVariables() {
         let mf = this.makefile;
         
@@ -145,13 +168,14 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
         mf.addVariable(new MakeVariable('OBJECTS', substitutions));
         mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
+        mf.addVariable(new MakeVariable('LIBS', this._getLibs()));
     }
 
     _getLinkingCommand() {
         var nx = this.nbxConfig;
 
         if(config.hasExecutableTarget(nx)) {
-            return '$(CC) $(LDFLAGS) $(OBJECTS) -o $@';
+            return '$(CC) $(OBJECTS) -o $@ $(LDFLAGS) $(LIBS)';
         } else if(config.hasStaticLibTarget(nx)) {
             return '$(AR) crf lib' + nx.targetName + '.a $(OBJECTS)'; 
         } else if(config.hasSharedLibTarget(nx)) {
