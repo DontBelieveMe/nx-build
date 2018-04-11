@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "test": "mocha tests",
-        "cover": "istanbul cover --include-all-sources _mocha tests/",
+        "cover": "istanbul cover --include-all-sources node_modules/mocha/bin/_mocha tests/",
         "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
     },
     "dependencies": {

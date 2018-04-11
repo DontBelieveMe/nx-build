@@ -6,7 +6,7 @@ class StringBuilder {
     }
 
     appendLine(str) {
-        if(str === undefined) {
+        if(str === undefined || str === null) {
             this.m_data += '\n';
             return;
         }

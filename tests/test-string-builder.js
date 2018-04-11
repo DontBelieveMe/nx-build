@@ -15,6 +15,8 @@ describe('StringBuilder', function(){
             var sb = new StringBuilder();
             sb.append(undefined);
             sb.append(null);
+            sb.append();
+
             assert.equal('', sb.toString());
         });
     });
@@ -26,6 +28,15 @@ describe('StringBuilder', function(){
             sb.appendLine('nextLine');
 
             assert.equal('helloWorld\nnextLine\n', sb.toString());
+        });
+
+        it('should append a single newline when the input parameter is undefined or null', function(){
+            var sb = new StringBuilder();
+            sb.appendLine(undefined);
+            sb.appendLine(null);
+            sb.appendLine();
+
+            assert.equal('\n\n\n', sb.toString());
         });
     });
 });
