@@ -7,7 +7,7 @@ class Makefile {
     }
 
     addVariable(variable) {
-        this.variablesBuilder.appendLine(variable.name + ":=" + variable.value);
+        this.variablesBuilder.appendLine(variable.buildAssignmentOpString());
     }
 
     addRule(rule) {
@@ -21,7 +21,7 @@ class Makefile {
     }
     
     appendToVariable(variable) {
-        this.variablesBuilder.appendLine(variable.name + "+=" + variable.value);
+        this.variablesBuilder.appendLine(variable.buildAppendOpString());
     }
 
     toString() {
