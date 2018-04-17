@@ -11,13 +11,7 @@ class Makefile {
     }
 
     addRule(rule) {
-        this.rulesBuilder.appendLine(rule.target + ': ' + rule.prerequisites);
-        
-        if(rule.commands !== undefined) {
-            rule.commands.forEach((val, index, array) => {
-                this.rulesBuilder.appendLine('\t' + val);
-            });
-        }
+        this.rulesBuilder.appendLine(rule.buildCommandString());
     }
     
     appendToVariable(variable) {
@@ -33,4 +27,3 @@ class Makefile {
 }
 
 module.exports = Makefile;
-
