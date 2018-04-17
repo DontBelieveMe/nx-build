@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var MakeVariable = require('../nxlib/gnuMake/make-variable');
+var MakeVariable = require('../../nxlib/gnuMake/make-variable');
 
 describe('MakeVariable', function(){
     describe('#constructor()', function(){
