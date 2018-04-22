@@ -24,6 +24,20 @@ var deleteFolderRecursive = function(path) {
     }
 };
 
+var vm = require('vm');
+
+var ctx = vm.createContext({
+    require: require, 
+    print: console.log, 
+    scriptDir: rootDir,
+});
+
+module.paths.push(__dirname + '/nxlib');
+fs.readFile(rootDir + '/nx.build.js', function(err, data){
+    vm.runInContext(data.toString(), ctx);
+});
+
+/*
 fs.readFile(rootDir + '/nxbuild.json', function(err, data) {
     var nbxConfig = JSON.parse(data.toString());    
     
@@ -50,3 +64,4 @@ fs.readFile(rootDir + '/nxbuild.json', function(err, data) {
     
     fs.writeFileSync('build/Makefile', makeGenerator.getString());
 });
+*/

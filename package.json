@@ -7,6 +7,7 @@
         "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
     },
     "dependencies": {
+        "app-module-path": "^2.2.0",
         "coveralls": "^3.0.0",
         "istanbul": "^0.4.5",
         "mocha": "^5.0.5",
