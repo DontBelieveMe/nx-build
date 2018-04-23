@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict'
+'use strict';
 
 var fs = require('fs');
 var rootDir = process.cwd();
@@ -27,8 +27,8 @@ var deleteFolderRecursive = function(path) {
 var vm = require('vm');
 
 var ctx = vm.createContext({
-    require: require, 
-    print: console.log, 
+    require: require,
+    print: console.log,
     scriptDir: rootDir,
 });
 
@@ -39,12 +39,12 @@ fs.readFile(rootDir + '/nx.build.js', function(err, data){
 
 /*
 fs.readFile(rootDir + '/nxbuild.json', function(err, data) {
-    var nbxConfig = JSON.parse(data.toString());    
+    var nbxConfig = JSON.parse(data.toString());
     
     var configSanitizer = new ConfigSanitizer(nbxConfig);
     nbxConfig = configSanitizer.sanitize();
     
-    if(nbxConfig === undefined) 
+    if(nbxConfig === undefined)
         return;
     
     var makeGenerator = new MakeGenerator(nbxConfig);
