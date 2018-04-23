@@ -18,5 +18,10 @@ describe('verify', function(){
 
             assert.throws(() => verify.isOfType(test, ExpectedObjectType));
         });
+
+        it('should allow the type \'object\' to pass any object type', ()=>{
+            var obj = {};
+            assert.doesNotThrow(() => verify.isOfType(obj, 'object'));
+        });
     });
 });
