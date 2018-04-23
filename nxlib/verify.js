@@ -11,6 +11,8 @@ verify.isOfType = function(variable, type) {
         if(!(variable instanceof type)) {
             throw new Error(err);
         }
+
+        return;
     }
     
     if(typeof variable !== type) {
