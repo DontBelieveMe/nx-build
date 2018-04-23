@@ -101,8 +101,8 @@ class MakeGenerator {
         return includes.toString();
     }
     
-    _getLDFlags() {
-        var nx = this.nbxConfig;
+    _getLinkerFlags() {
+        var nx = this.nxConfig;
         return this._parseFlagsConfigOption(nx.linkerFlags);
     }
     
@@ -131,7 +131,7 @@ class MakeGenerator {
     }
 
     _getLibs() {
-        let configLibs = this.nbxConfig.libs;
+        let configLibs = this.nxConfig.libs;
         // TODO: For now assume libs is in array form
         
         let libsStr = new StringBuilder();
@@ -158,8 +158,8 @@ class MakeGenerator {
         let subsArrayString = this._getSourceExtensionObjectFileSubstitutions();
         let substitutions = '$(addprefix obj/, $(filter %.o, $(notdir ' + subsArrayString + ')))';
 
-        mf.addVariable(new MakeVariable('CC', this.nbxConfig.cCompiler));
-        mf.addVariable(new MakeVariable('CXX', this.nbxConfig.cppCompiler));
+        mf.addVariable(new MakeVariable('CC', this.nxConfig.cCompiler));
+        mf.addVariable(new MakeVariable('CXX', this.nxConfig.cppCompiler));
         mf.addVariable(new MakeVariable('AR', 'ar'));
         mf.addVariable(new MakeVariable('AS', this.nxConfig.assembler));
         mf.addVariable(new MakeVariable('CFLAGS', this._getCompilerFlagsString()));
@@ -167,7 +167,7 @@ class MakeGenerator {
         mf.addVariable(new MakeVariable('INCLUDEDIRS', this._getIncludeDirsString()));
         mf.addVariable(new MakeVariable('SOURCES', this._getSourcesString()));
         mf.addVariable(new MakeVariable('OBJECTS', substitutions));
-        mf.addVariable(new MakeVariable('TARGET_NAME', this.nbxConfig.targetName));
+        mf.addVariable(new MakeVariable('TARGET_NAME', this.nxConfig.targetName));
         mf.addVariable(new MakeVariable('LIBS', this._getLibs()));
     }
 

@@ -11,7 +11,7 @@ class Makefile {
     }
 
     addRule(rule) {
-        this.rulesBuilder.appendLine(rule.buildCommandString());
+        this.rulesBuilder.appendLine(rule.buildRuleString());
     }
     
     appendToVariable(variable) {
