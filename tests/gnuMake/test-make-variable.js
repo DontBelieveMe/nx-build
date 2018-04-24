@@ -12,6 +12,26 @@ describe('MakeVariable', function(){
         });
     });
 
+    describe('#buildAppendOpString()', function(){
+        it('should correctly construct a Make command that appends to a variable with the correct name', function(){
+            var mv = new MakeVariable("existingVariable", "valueToAppend");
+            var appendOpString = mv.buildAppendOpString();
+
+            var actualVariable = appendOpString.match(/([A-Za-z]+).*/)[1];
+            
+            assert.strictEqual(actualVariable, 'existingVariable');
+        });
+
+        it('should correctly construct a Make command that appends to a variable with the correct value', function(){
+            var mv = new MakeVariable("existingVariable", "valueToAppend");
+            var appendOpString = mv.buildAppendOpString();
+
+            var actualValue = appendOpString.match(/[A-Za-z]+\+=([A-Za-z]+)/)[1];
+            
+            assert.strictEqual(actualValue, 'valueToAppend');
+        });
+    });
+
     describe('#buildAssignmentOpString()', function(){
         it('should correctly set the variable name when building the assignment operation string', function(){
             var mv = new MakeVariable("variableName", "testValue");
