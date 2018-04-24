@@ -15,13 +15,27 @@ class Target {
     
     setType(type) {
         verify.isOfType(type, 'string');
+        this._internal.targetType = type;
+    }
+
+    addHeaderFile(file) {
+        verify.isOfType(file, 'string');
+
+        this._internal.headerFiles = verify.defaultIfUndefined(this._internal.headerFiles, []);
+        this._internal.headerFiles.push(file);
+    }
+
+    addIncludeDir(dir) {
+        verify.isOfType(dir, 'string');
+
+        this._internal.includeDirs = verify.defaultIfUndefined(this._internal.includeDirs, []);
+        this._internal.includeDirs.push(dir);
     }
     
     addSrcFile(srcFile) {
-        if(this._internal.srcFiles === undefined) {
-            this._internal.srcFiles = [];
-        }
-
+        verify.isOfType(srcFile, 'string');
+        
+        this._internal.srcFiles = verify.defaultIfUndefined(this._internal.srcFiles, []);
         this._internal.srcFiles.push(srcFile);
     }
 }

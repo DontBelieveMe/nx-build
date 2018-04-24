@@ -19,3 +19,15 @@ verify.isOfType = function(variable, type) {
         throw new Error(err);
     }
 }
+
+verify.isUndefined = function(variable) {
+    return variable === undefined || variable === 'undefined';
+}
+
+verify.defaultIfUndefined = function(variable, defaultValue) {
+    if(verify.isUndefined(variable)) {
+        return defaultValue;
+    }
+
+    return variable;
+}

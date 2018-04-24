@@ -19,7 +19,7 @@ nx.addTarget = function(target) {
     var nxInternal = target._internal;
     var sanitizer = new ConfigSanitizer(nxInternal);
     nxInternal = sanitizer.sanitize();
-    console.log(nxInternal);
+    
     var generator = new MakeGenerator(nxInternal);
     var str = generator.getString();
 
