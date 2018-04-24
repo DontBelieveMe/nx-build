@@ -36,7 +36,6 @@ class MakeGenerator {
 
     _getSourceRelativeArray() {
         var nx = this.nxConfig;
-
         return this._makeFilePathsRelativeToBuildDir(nx.srcFiles);
     }
 

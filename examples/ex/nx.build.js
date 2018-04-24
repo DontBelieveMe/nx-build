@@ -3,7 +3,7 @@ var nx = require('nx');
 var target = nx.createTarget();
 
 target.setName('helloWorld');
-target.setName('executable');
+target.setType('executable');
 
 target.addSrcFile('src/main.c');
 target.addSrcFile('src/impl.c')
