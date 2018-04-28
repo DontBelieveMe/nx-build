@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/DontBelieveMe/nx-build.svg?branch=master)](https://travis-ci.org/DontBelieveMe/nx-build)
 [![Coverage Status](https://coveralls.io/repos/github/DontBelieveMe/nx-build/badge.svg?branch=master)](https://coveralls.io/github/DontBelieveMe/nx-build?branch=master)
 
-## Usage
+## Usage (JSON format deprecated, common JS is now used for scripting)
 In the root tree of the project add a `nxbuild.json` file that describes the project.  
 For example, for the project structure
 ```
