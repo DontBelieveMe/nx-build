@@ -2,6 +2,13 @@
 
 const verify = exports;
 
+verify.TYPE_STRING = 'string';
+verify.TYPE_NUMBER = 'number';
+verify.TYPE_BOOL = 'boolean';
+verify.TYPE_FUNCTION = 'function';
+verify.TYPE_OBJECT = 'object';
+verify.TYPE_UNDEFINED = 'undefined';
+
 verify.isOfType = function(variable, type) {
     var err = "Argument (" + variable + ") is not of expected type " + type;
 
