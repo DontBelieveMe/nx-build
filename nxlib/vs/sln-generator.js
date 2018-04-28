@@ -64,6 +64,15 @@ class SlnGenerator {
     }
 
     getString() {
+        /**
+         * Visual Studio solution file format versions.
+         * ---
+         * VS 2003 -> 8.00
+         * VS 2005 -> 9.00
+         * VS 2008 -> 10.00
+         * VS 2010 -> 11.00
+         * VS 2013 -> 12.00 
+         */
         var slnFormatVersion = "12.00";
 
         var sb = new StringBuilder();
