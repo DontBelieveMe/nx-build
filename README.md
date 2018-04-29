@@ -6,7 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Setup
- - Run `git clone https://github.com/DontBelieveMe/nx-build.git`
+ - If you are going to contribute to the project fork it from github and clone your fork
+ - Otherwise run `git clone https://github.com/DontBelieveMe/nx-build.git`
  - Navigate into that root directory
  - Run `npm install` to install all all npm dependencies
  - Now we can run the code by executing '`node index.js` 
