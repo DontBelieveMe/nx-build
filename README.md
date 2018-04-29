@@ -42,3 +42,12 @@ nx.addTarget(target);
  - `nx.addTarget(target)` -> This finally will include target as part of that module. This will eventually allow for having multiple targets in one project.
 
 That is the anatomy of a simple `nx.build.js` file. Of course, because they are scripted in JS, anything you can do in JS you can do in these scripts, for example conditionally add source files depending on the OS (exposed through Nodes `os` module), modify the filesystem (Nodes `fs` module), or even use the node `HTTP/HTTPS` API to download or upload files!
+
+## Roadmap
+ - Currently there are a few items that I believe are important to getting the project in a minimum usable state.
+ - Be able to specify generator from command line (whilst it seems critical this is not supported currently :/)
+ - Visual Studio project generation
+ - Allowing a structure that supports 'subprojects' or adding external `nx-build` projects.
+   - Like CMakes `add_directory` function
+   - It would be really cool to be able to integrate this functionality with git submodules (e.g similar to Vim & Vundle) - Specify a GitHub address (`name/project`) and `nx-build` should clone that and integrate it.
+ - All [Issues](https://github.com/DontBelieveMe/nx-build/issues)
