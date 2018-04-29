@@ -3,41 +3,40 @@
 [![Build Status](https://travis-ci.org/DontBelieveMe/nx-build.svg?branch=master)](https://travis-ci.org/DontBelieveMe/nx-build)
 [![Coverage Status](https://coveralls.io/repos/github/DontBelieveMe/nx-build/badge.svg?branch=master)](https://coveralls.io/github/DontBelieveMe/nx-build?branch=master)
 
-## Usage (JSON format deprecated, common JS is now used for scripting)
-In the root tree of the project add a `nxbuild.json` file that describes the project.  
-For example, for the project structure
-```
-hello-world/
-├── src/
-├     ├── main.c
-├     ├── impl.c
-├── include/
-├     ├── main.h
-├── nxbuild.json
-```
-  
-nxbuild.json
-```json
-{
-    "buildDir": "build", 
+## Setup
+ - Run `git clone https://github.com/DontBelieveMe/nx-build.git`
+ - Navigate into that root directory
+ - Run `npm install` to install all all npm dependencies
+ - Now we can run the code by executing '`node index.js` 
+ - For example to generate project files in the `examples/ex` folder run `node ../../index.js` from that directory.
+ - This is generate project files in a `build` subdirectory. (This subfolder name is hardcoded for now).
  
-    "srcFiles": [
-        "src/main.c",
-        "src/impl.c"
-    ],
-    "headerFiles": [
-        "include/main.h"
-    ],
+## Usage
 
-    "includeDirs": [
-        "include"
-    ],
-    "compilerFlags": "-Wall -Werror -Wpedantic",
-    "targetName": "helloWorld",
-    "targetType": "executable"
-}
+`nx-build` scripts are written in plain Javascript and have full access to the node ecosystem
+ - Mostly - you can `require` all default node modules and any modules exposed by `nx-build`
+ - At the moment you cannot install any external packages via `npm` or any other package manager.
+
+In order to use `nx-build` create a `nx.build.js` file in the root of your project.  
+A simple `nx.build.js` file may look like this
+
+```js
+var nx = require('nx');
+
+var target = nx.createTarget();
+
+target.setName('helloWorld');
+target.setType('executable');
+
+target.addSrcFile('src/main.c');
+
+nx.addTarget(target);
 ```
-  - Then run `nxbuild.js` in the root directory of the project
-  - This will generate a `build` folder in the root which will contain the Makefile, object files and target file (executable, library etc...)
-  - Run `cd build && make && cd ..` from the root directory to build the project.
-  - And hey presto, a target file.
+ - `var nx = require('nx');` -> This will include the `nx` generator system API for you to use.
+ - `var target = nx.createTarget()` -> This creates a new target. A target is a binary file that is either an executable, a static library or a shared library.
+ - `target.setName('helloWorld');` -> Sets the name of the target, In this case the executable will be called `helloWorld`
+ - `target.setType('executable');` -> Sets the type of the target, e.g executable, shared/static library. In this case it the source files are going to compile into a executable.
+ - `target.addSrcFile('src/main.c');` -> Adds a source file to be compiled into the target. File paths such as these are all relative to the directory of the `nx.build.js`.
+ - `nx.addTarget(target)` -> This finally will include target as part of that module. This will eventually allow for having multiple targets in one project.
+
+That is the anatomy of a simple `nx.build.js` file. Of course, because they are scripted in JS, anything you can do in JS you can do in these scripts, for example conditionally add source files depending on the OS (exposed through Nodes `os` module), modify the filesystem (Nodes `fs` module), or even use the node `HTTP/HTTPS` API to download or upload files!
