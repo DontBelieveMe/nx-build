@@ -46,7 +46,6 @@ That is the anatomy of a simple `nx.build.js` file. Of course, because they are 
 
 ## Roadmap
  - Currently there are a few items that I believe are important to getting the project in a minimum usable state.
- - Be able to specify generator from command line (whilst it seems critical this is not supported currently :/)
  - Visual Studio project generation
  - Allowing a structure that supports 'subprojects' or adding external `nx-build` projects.
    - Like CMakes `add_directory` function
