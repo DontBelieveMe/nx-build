@@ -14,23 +14,10 @@ nx.createTarget = function() {
     return new Target();
 };
 
+nx._targets = [];
+
 nx.addTarget = function(target) {
     verify.isOfType(target, Target);
-
-    var nxInternal = target._internal;
-    var sanitizer = new ConfigSanitizer(nxInternal);
-    nxInternal = sanitizer.sanitize();
     
-    var buildMake = false;
-    if(buildMake) {
-        var generator = new MakeGenerator(nxInternal);
-        var str = generator.getString();
-
-        fs.writeFileSync('build/Makefile', str);
-    } else {
-        var generator = new SlnGenerator(nxInternal);
-        var str = generator.getString();
-
-        fs.writeFileSync('build/' + target._internal.targetName + '.sln', str);        
-    }
+    nx._targets.push(target);
 };
