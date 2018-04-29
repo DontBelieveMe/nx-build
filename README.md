@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/DontBelieveMe/nx-build.svg?branch=master)](https://travis-ci.org/DontBelieveMe/nx-build)
 [![Coverage Status](https://coveralls.io/repos/github/DontBelieveMe/nx-build/badge.svg?branch=master)](https://coveralls.io/github/DontBelieveMe/nx-build?branch=master)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Setup
  - Run `git clone https://github.com/DontBelieveMe/nx-build.git`
