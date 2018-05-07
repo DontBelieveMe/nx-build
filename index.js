@@ -1,25 +1,16 @@
 #!/usr/bin/env node
 'use strict';
 
-var fs = require('fs');
-var vm = require('vm');
-
+const path = require('path');
 const NxRunner = require('./nxlib/nx-runner');
 
-var ctx = vm.createContext({
-    require: require,
-    print: console.log,
-    scriptDir: rootDir,
-});
+var nxRunner = new NxRunner();
+var generatorName = process.argv[2]; // Until we do proper cmd line args parsing, lets just take it as the first argument.
 
-var rootDir = process.cwd();
-module.paths.push(__dirname + '/nxlib');
+if(generatorName === undefined) {
+    generatorName = 'make';
+}
 
-fs.readFile(rootDir + '/nx.build.js', function(err, data){
-    var nxRunner = new NxRunner();
-    var generatorName = process.argv[2]; // Until we do proper cmd line args parsing, lets just take it as the first argument.
-    if(generatorName === undefined) generatorName = 'make';
-    nxRunner.setGenerator(generatorName);
-    vm.runInContext(data.toString(), ctx);
-    nxRunner.generate();
-});
+nxRunner.setGenerator(generatorName);
+nxRunner.runScript(path.join(process.cwd(), 'nx.build.js'));
+nxRunner.generate();

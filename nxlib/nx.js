@@ -14,6 +14,10 @@ nx.createTarget = function() {
     return new Target();
 };
 
+nx.createProject = function(projectName) {
+    return new Project();
+}
+
 nx._targets = [];
 
 nx.addTarget = function(target) {

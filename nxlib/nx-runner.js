@@ -2,6 +2,8 @@ const verify = require('./verify');
 const nx = require('./nx');
 
 const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
 
 const MakeGenerator = require('./gnuMake/make-generator');
 const SlnGenerator = require('./vs/sln-generator');
@@ -14,12 +16,21 @@ class NxRunner {
         // platform generator auto detection
         this._generator = undefined;
         this.targets = [];
+        this._module = {};
+        // Push the directory of the api into global scope for requires.
+        module.paths.push(__dirname);
+        this.scriptContext = vm.createContext({
+            require: require,
+            print: console.log,
+            module: this._module
+        });
     }
     
     setGenerator(generatorStr) {
         verify.isOfType(generatorStr, 'string');
         
-        if(generatorStr !== 'make' && generatorStr !== 'vs2017') return;
+        assert(generatorStr === 'make' || generatorStr === 'vs2017');
+
         this._generator = generatorStr;
     }
     
@@ -32,7 +43,15 @@ class NxRunner {
 
         return undefined;
     }
- 
+    
+    runScript(filePath) {
+        var strBuffer = fs.readFileSync(filePath);
+        var scriptString = strBuffer.toString();
+
+        vm.runInContext(scriptString, this.scriptContext);
+        console.log(this._module.exports);
+    }
+
     generate() {
         var targets = nx._targets;
         targets.forEach(target => {

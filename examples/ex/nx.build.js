@@ -1,6 +1,7 @@
 var nx = require('nx');
 
-var target = nx.createTarget();
+var project = nx.createProject();
+var target = project.createTarget(); 
 
 target.setName('helloWorld');
 target.setType('executable');
@@ -11,4 +12,6 @@ target.addSrcFile('src/impl.c')
 target.addIncludeDir('include');
 target.addHeaderFile('include/impl.h');
 
-nx.addTarget(target);
+project.addTarget(target);
+
+module.exports = 123;
