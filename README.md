@@ -45,7 +45,7 @@ nx.addTarget(target);
 That is the anatomy of a simple `nx.build.js` file. Of course, because they are scripted in JS, anything you can do in JS you can do in these scripts, for example conditionally add source files depending on the OS (exposed through Nodes `os` module), modify the filesystem (Nodes `fs` module), or even use the node `HTTP/HTTPS` API to download or upload files!
 
 ## Roadmap
- - Currently there are a few items that I believe are important to getting the project in a minimum usable state.
+ - Currently the project is going through a 'bit' (read a lot) of a restructure and converting to typescript whilst i'm at it. So yeah, that.
  - Visual Studio project generation
  - Allowing a structure that supports 'subprojects' or adding external `nx-build` projects.
    - Like CMakes `add_directory` function
