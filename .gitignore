@@ -69,3 +69,4 @@ typings/
 # Project specific
 build/
 *.o
+dist/
