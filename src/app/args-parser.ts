@@ -17,14 +17,15 @@ export class CommandLineArg {
             rawString = rawString.substring(2);
             
             let equalsSignSplit = rawString.split('=');
-            console.log(equalsSignSplit.length);
+            this.name = equalsSignSplit[0];
+            this.values = [];
+
             if(equalsSignSplit.length > 1) {
                 this.flag = false;
 
                 let valueCommaSeperatedList = equalsSignSplit[1];
                 valueCommaSeperatedList = valueCommaSeperatedList.replace(' ', '');
                 
-                this.name = equalsSignSplit[0];
                 this.values = valueCommaSeperatedList.split(',');
             } else {
                 this.flag = true;
@@ -58,11 +59,13 @@ export class CommandLineArgsParser {
 
     constructor(rawArgsArray: string[]) {
         this.parsedArguments = [];
-
-        for (const rawArgument of rawArgsArray) {
-            let parsedArg: CommandLineArg = new CommandLineArg(rawArgument);
-            if(parsedArg.isValid()) {
-                this.parsedArguments.push(parsedArg);
+        
+        if(rawArgsArray) {
+            for (const rawArgument of rawArgsArray) {
+                let parsedArg: CommandLineArg = new CommandLineArg(rawArgument);
+                if(parsedArg.isValid()) {
+                    this.parsedArguments.push(parsedArg);
+                }
             }
         }
     }
