@@ -66,6 +66,9 @@ typings/
 [._]s[a-v][a-z]
 [._]sw[a-p]
 
+# Visual Studio
+.vs/
+
 # Project specific
 build/
 *.o
