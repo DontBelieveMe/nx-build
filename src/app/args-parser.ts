@@ -12,20 +12,25 @@ export class CommandLineArg {
         this.valid = validArgumentRegex.test(rawString);
         this.rawString = rawString;
 
-        if(this.isValid()) {
+        // These are defaults if the argument turns out to be invalid
+        this.values = []; 
+        this.flag = false;
+        this.name = '';
+
+        if (this.isValid()) {
             // Strip the leading '--'
             rawString = rawString.substring(2);
-            
+
             let equalsSignSplit = rawString.split('=');
             this.name = equalsSignSplit[0];
-            this.values = [];
 
-            if(equalsSignSplit.length > 1) {
+
+            if (equalsSignSplit.length > 1) {
                 this.flag = false;
 
                 let valueCommaSeperatedList = equalsSignSplit[1];
                 valueCommaSeperatedList = valueCommaSeperatedList.replace(' ', '');
-                
+
                 this.values = valueCommaSeperatedList.split(',');
             } else {
                 this.flag = true;
