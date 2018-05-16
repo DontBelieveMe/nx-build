@@ -88,7 +88,7 @@ export class CommandLineArgsParser {
         return this.parsedArguments;
     }
 
-    public getArgumentOfName(name: string): CommandLineArg {
+    public getArgumentOfName(name: string): CommandLineArg | null {
         for (const arg of this.parsedArguments) {
             if(arg.getName() === name) {
                 return arg;
