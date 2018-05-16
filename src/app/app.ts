@@ -1,8 +1,6 @@
 import { CommandLineArgsParser, CommandLineArg } from './args-parser';
 
-export function onProgramStart() {
-    let commandLineArguments: string[] = process.argv;
-    let commandLineArgsParser = new CommandLineArgsParser(commandLineArguments);
+import * as os from 'os';
 
-    console.log(commandLineArgsParser.hasArgument('generator'));
+export function onProgramStart() {
 }

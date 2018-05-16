@@ -24,14 +24,23 @@ export class CommandLineArg {
             let equalsSignSplit = rawString.split('=');
             this.name = equalsSignSplit[0];
 
-
             if (equalsSignSplit.length > 1) {
-                this.flag = false;
 
-                let valueCommaSeperatedList = equalsSignSplit[1];
-                valueCommaSeperatedList = valueCommaSeperatedList.replace(' ', '');
+                // This condition is here to support the 
+                //      --flag=
+                // syntax (e.g. no options are provided)
+                // If that is the case then `equalsSignSplit` will have
+                // an empty string where the options would be.
+                if(equalsSignSplit[1] !== '') {
+                    this.flag = false;
 
-                this.values = valueCommaSeperatedList.split(',');
+                    let valueCommaSeperatedList = equalsSignSplit[1];
+                    valueCommaSeperatedList = valueCommaSeperatedList.replace(' ', '');
+
+                    this.values = valueCommaSeperatedList.split(',');
+                } else {
+                    this.values.pop();
+                }
             } else {
                 this.flag = true;
             }
