@@ -6,7 +6,9 @@
         "sourceMap": true,
         "strict": true,
         "removeComments": true,
-        "pretty": true
+        "pretty": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true
     },
     "files": [
         "./node_modules/@types/node/index.d.ts",
