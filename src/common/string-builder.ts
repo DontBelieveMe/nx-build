@@ -13,7 +13,7 @@ export class StringBuilder {
     }
 
     public appendLine(str?: string) {
-        if(str === undefined || str === null) {
+        if(!str) {
             str = '';
         }
 
@@ -21,10 +21,6 @@ export class StringBuilder {
     }
 
     public append(str?: string) {
-        if(str === undefined || str === null) {
-            return;
-        }
-
         this.stringData += str;
     }
 
