@@ -74,12 +74,10 @@ export class CommandLineArgsParser {
     constructor(rawArgsArray: string[]) {
         this.parsedArguments = [];
         
-        if(rawArgsArray) {
-            for (const rawArgument of rawArgsArray) {
-                let parsedArg: CommandLineArg = new CommandLineArg(rawArgument);
-                if(parsedArg.isValid()) {
-                    this.parsedArguments.push(parsedArg);
-                }
+        for (const rawArgument of rawArgsArray) {
+            let parsedArg: CommandLineArg = new CommandLineArg(rawArgument);
+            if(parsedArg.isValid()) {
+                this.parsedArguments.push(parsedArg);
             }
         }
     }
